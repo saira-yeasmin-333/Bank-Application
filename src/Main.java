@@ -66,6 +66,16 @@ public class Main {
                     double withdrawAmount = scanner.nextDouble();
                     bank.withdraw(withdrawNumber, withdrawAmount);
                     break;
+                case 7:
+                    System.out.println("Enter Account number to Search:");
+                    String searchName = scanner.next();
+                    bank.searchAccounts(searchName);
+                    break;
+                case 8:
+                    System.out.println("Thank you for using our application. Have a great day!");
+                    System.out.println("Exiting...");
+                    System.exit(0);
+                    break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }

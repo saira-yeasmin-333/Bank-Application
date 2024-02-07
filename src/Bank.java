@@ -164,5 +164,11 @@ public class Bank {
         }
     }
 
+    public void searchAccounts(String number){
+        Account account = findAccount(number);
+        if(account!=null)System.out.println(account.toString());
+        else System.out.println("Account not found");
+    }
+
 
 }
