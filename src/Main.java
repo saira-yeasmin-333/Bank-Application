@@ -19,7 +19,7 @@ public class Main {
                     System.out.println(
                             "1. Savings(Required money to open: "+Constants.SAVING_OPENINGS+" , Minimum Balance : "+Constants.SAVING_MINIMUM+")\n"+
                             "2. Current(Required money to open: "+Constants.CURRENT_OPENINGS+" , Minimum Balance : "+Constants.CURRENT_MINIMUM+")\n"+
-                            "3. Salary(Required money to open: "+Constants.SAVING_OPENINGS+" , Minimum Balance : "+Constants.SALARY_MINIMUM+")\n");
+                            "3. Salary(Required money to open: "+Constants.SALARY_OPENINGS+" , Minimum Balance : "+Constants.SALARY_MINIMUM+")\n");
                     scanner = new Scanner(System.in);
                     System.out.println("Please enter account name:");
                     String name = scanner.next();
@@ -27,7 +27,8 @@ public class Main {
                     double balance = scanner.nextDouble();
                     System.out.println("Please select account type any of the 3 types mentioned above:");
                     int type = scanner.nextInt();
-                    bank.createAccount(name,balance,type);
+                    if(type<1 ||type>3) System.out.println("Invalid account type");
+                    else bank.createAccount(name,balance,type);
                     break;
                 case 2:
                     System.out.println("Please enter your name: ");
@@ -40,15 +41,30 @@ public class Main {
                     System.out.println(
                     "1. Savings(Required money to open: "+Constants.SAVING_OPENINGS+" , Minimum Balance : "+Constants.SAVING_MINIMUM+")\n"+
                     "2. Current(Required money to open: "+Constants.CURRENT_OPENINGS+" , Minimum Balance : "+Constants.CURRENT_MINIMUM+")\n"+
-                    "3. Salary(Required money to open: "+Constants.SAVING_OPENINGS+" , Minimum Balance : "+Constants.SALARY_MINIMUM+")\n");
+                    "3. Salary(Required money to open: "+Constants.SALARY_OPENINGS+" , Minimum Balance : "+Constants.SALARY_MINIMUM+")\n");
                     System.out.println("Please enter your updated account type");
                     int updatedType= scanner.nextInt();
-                    bank.updateAccount(updateNumber,updatedType);
+                    if(updatedType<1 || updatedType>3) System.out.println("Invalid account type");
+                    else bank.updateAccount(updateNumber,updatedType);
                     break;
                 case 4:
                     System.out.println("Please enter Account Number to Delete:");
                     String deleteNumber = scanner.next();
                     bank.deleteAccount(deleteNumber);
+                    break;
+                case 5:
+                    System.out.println("Enter Account Number:");
+                    String depositNumber = scanner.next();
+                    System.out.println("Enter amount for deposit :");
+                    double depositAmount = scanner.nextDouble();
+                    bank.deposit(depositNumber, depositAmount);
+                    break;
+                case 6:
+                    System.out.println("Enter Account Number");
+                    String withdrawNumber = scanner.next();
+                    System.out.println("Enter the amount for withdrawal");
+                    double withdrawAmount = scanner.nextDouble();
+                    bank.withdraw(withdrawNumber, withdrawAmount);
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
