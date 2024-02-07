@@ -25,23 +25,21 @@ public class Bank {
         return null;
     }
 
-    public void createAccount(String name,double balance,int choice){
+    boolean openingConditionFilled(double balance,int choice){
+        double required=0;
+        if(choice==Constants.SAVING_CHOICE)required=Constants.SAVING_OPENINGS;
+        else if(choice==Constants.CURRENT_CHOICE)required=Constants.CURRENT_OPENINGS;
+        else if(choice==Constants.SAlARY_CHOICE)required=Constants.SALARY_OPENINGS;
+        return !(balance < required);
+    }
+
+    void createAccount(String name,double balance,int choice){
         totalAccount++;
         String accountId=Integer.toString(totalAccount);
         Account account=null;
-        if(choice ==Constants.SAVING_CHOICE){
-            if(balance<Constants.SAVING_OPENINGS)System.out.println("Required money to open saving account is "+Constants.SAVING_OPENINGS);
-            else account=new SavingAccount(name,accountId,balance,Constants.SAVING_ACCOUNT);
-        }
-        else if(choice==Constants.CURRENT_CHOICE){
-            if(balance<Constants.CURRENT_OPENINGS)System.out.println("Required money to open current account is "+Constants.CURRENT_OPENINGS);
-            else account=new SavingAccount(name,accountId,balance,Constants.CURRENT_ACCOUNT);
-        }
-        else if(choice==Constants.SAlARY_CHOICE){
-            if(balance<Constants.SALARY_OPENINGS)System.out.println("Required money to open current account is "+Constants.SALARY_OPENINGS);
-            else account=new SavingAccount(name,accountId,balance,Constants.SALARY_ACCOUNT);
-        }
-
+        if(openingConditionFilled(balance,choice)&& choice==Constants.SAVING_CHOICE)account=new SavingAccount(name,accountId,balance,Constants.SAVING_ACCOUNT);
+        else if(openingConditionFilled(balance,choice)&& choice==Constants.CURRENT_CHOICE)account=new CurrentAccount(name,accountId,balance,Constants.SAVING_ACCOUNT);
+        else if(openingConditionFilled(balance,choice)&& choice==Constants.SAlARY_CHOICE)account=new SalaryAccount(name,accountId,balance,Constants.SAVING_ACCOUNT);
         if(account!=null){
             accounts.add(account);
             System.out.println("Account has been created successfully");
@@ -53,11 +51,11 @@ public class Bank {
             }
         }
         else{
-            System.out.println("Account creation is unsuccessful");
+            System.out.println("Please fulfill the required money to open account");
         }
     }
 
-    public void displayAccounts(String userName) {
+    void displayAccounts(String userName) {
         List<Account> allAccounts = userAccount.get(userName);
         if (allAccounts.isEmpty()) {
             System.out.println("No accounts to display.");
@@ -65,9 +63,64 @@ public class Bank {
         }
 //        System.out.println("len: "+allAccounts.size());
         for(Account a:allAccounts) System.out.println(a.toString());
-
     }
 
+    boolean canUpdated(double balance,int choice){
+        double required=0;
+        if(choice==Constants.SAVING_CHOICE)required=Constants.SAVING_MINIMUM;
+        else if(choice==Constants.CURRENT_CHOICE)required=Constants.CURRENT_MINIMUM;
+        else if(choice==Constants.SAlARY_CHOICE)required=Constants.SALARY_MINIMUM;
+        return balance>=required;
+    }
+
+    void updateAccount(String number,int choice) {
+        Account account = findAccount(number);
+        if(account!=null) {
+            Account updatedAccount = null;
+            if (canUpdated(account.getBalance(), choice)) {
+                if (choice == Constants.SAVING_CHOICE)
+                    updatedAccount = new SavingAccount(account.getName(), number, account.getBalance(), Constants.SAVING_ACCOUNT);
+                else if (choice == Constants.CURRENT_CHOICE)
+                    updatedAccount = new CurrentAccount(account.getName(), number, account.getBalance(), Constants.CURRENT_ACCOUNT);
+                else if (choice == Constants.SAlARY_CHOICE)
+                    updatedAccount = new SalaryAccount(account.getName(), number, account.getBalance(), Constants.SALARY_ACCOUNT);
+                accounts.remove(account);
+                accounts.add(updatedAccount);
+                List<Account> allAccounts = userAccount.get(updatedAccount.getName());
+                for(Account a:allAccounts){
+                    if(a.getAccountNumber().equals(number)){
+                        allAccounts.remove(a);
+                        break;
+                    }
+                }
+                allAccounts.add(updatedAccount);
+                userAccount.put(updatedAccount.getName(),allAccounts);
+                System.out.println("Account " + number + " updated successfully.");
+            }
+            else System.out.println("Account can not be updated due to your low balance");
+        }
+        else System.out.println("Account not found.");
+    }
+
+    void deleteAccount(String number) {
+        Account account = findAccount(number);
+        if (account != null) {
+            List<Account> toRemove = new ArrayList<>();
+            List<Account> allAccounts = userAccount.get(account.getName());
+            for(Account a : allAccounts) {
+                if(a.getAccountNumber().equals(number)) {
+                    toRemove.add(a); // Add to temporary list, not removing from allAccounts directly
+                }
+            }
+            allAccounts.removeAll(toRemove);
+            userAccount.put(account.getName(), allAccounts);
+            accounts.remove(account);
+            System.out.println("Account " + number + " deleted successfully.");
+
+        } else {
+            System.out.println("Account not found.");
+        }
+    }
 
 
 }
