@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Bank bank = Bank.getBankInstance();
-        System.out.println("Welcome to the Bank Application!");
+        System.out.println("Welcome to the Simple Bank Application!");
         while (true) {
             System.out.println("Please choose an option:");
             System.out.println("1: Create Account\n2: Display All Accounts\n3: Update Account\n4: Delete Account\n5: Deposit\n6: Withdraw\n7: Search Account\n8: Exit");
