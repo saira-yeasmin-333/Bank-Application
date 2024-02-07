@@ -38,8 +38,8 @@ public class Bank {
         String accountId=Integer.toString(totalAccount);
         Account account=null;
         if(openingConditionFilled(balance,choice)&& choice==Constants.SAVING_CHOICE)account=new SavingAccount(name,accountId,balance,Constants.SAVING_ACCOUNT);
-        else if(openingConditionFilled(balance,choice)&& choice==Constants.CURRENT_CHOICE)account=new CurrentAccount(name,accountId,balance,Constants.SAVING_ACCOUNT);
-        else if(openingConditionFilled(balance,choice)&& choice==Constants.SAlARY_CHOICE)account=new SalaryAccount(name,accountId,balance,Constants.SAVING_ACCOUNT);
+        else if(openingConditionFilled(balance,choice)&& choice==Constants.CURRENT_CHOICE)account=new CurrentAccount(name,accountId,balance,Constants.CURRENT_ACCOUNT);
+        else if(openingConditionFilled(balance,choice)&& choice==Constants.SAlARY_CHOICE)account=new SalaryAccount(name,accountId,balance,Constants.SALARY_ACCOUNT);
         if(account!=null){
             accounts.add(account);
             System.out.println("Account has been created successfully");
@@ -120,6 +120,54 @@ public class Bank {
         } else {
             System.out.println("Account not found.");
         }
+    }
+    void withdraw(String number,double amount){
+        Account account = findAccount(number);
+        if(account!=null){
+            if(account.withdraw(amount)){
+                List<Account> allAccounts = userAccount.get(account.getName());
+                for(Account a:allAccounts){
+                    if(a.getAccountNumber().equals(number)){
+                        allAccounts.remove(a);
+                        break;
+                    }
+                }
+                allAccounts.add(account);
+                userAccount.put(account.getName(), allAccounts);
+                System.out.println("Money withdrawal is successful");
+            }
+            else{
+                System.out.println("Withdrawal would result in balance falling below minimum required.");
+            }
+        }
+        else System.out.println("Account not found");
+    }
+
+    void deposit(String number,double amount){
+        Account account = findAccount(number);
+        if(account !=null){
+            if(account.deposit(amount)){
+                List<Account> allAccounts = userAccount.get(account.getName());
+                for(Account a:allAccounts){
+                    if(a.getAccountNumber().equals(number)){
+                        allAccounts.remove(a);
+                        break;
+                    }
+                }
+                allAccounts.add(account);
+                userAccount.put(account.getName(), allAccounts);
+                System.out.println("Money has been deposited successfully");
+            }
+        }
+        else{
+            System.out.println("Account not found.");
+        }
+    }
+
+    public void searchAccounts(String number){
+        Account account = findAccount(number);
+        if(account!=null)System.out.println(account.toString());
+        else System.out.println("Account not found");
     }
 
 
